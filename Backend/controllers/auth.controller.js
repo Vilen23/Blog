@@ -39,11 +39,10 @@ const signin = async (req, res, next) => {
   try {
       const validuser = await User.findOne({ username });
       if (!validuser) {
-            console.log("mila kya");
           return next(errorHandler(400, "User not found"));
         }
 
-    const validpass = bcrypt.compare(password, validuser.password);
+    const validpass = await bcrypt.compare(password, validuser.password);
     if (!validpass) {
       return next(errorHandler(400, "Invalid Password"));
     }
