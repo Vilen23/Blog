@@ -6,10 +6,12 @@ import { Signup } from './pages/Signup'
 import { About } from './pages/About'
 import { Dashboard } from './pages/Dashboard'
 import { Projects } from './pages/Projects'
+import { Navabar } from './comp/Navbar'
 
 function App() {
   return (
-    <div >
+    <div className='bg-[#ffffff] h-screen '>
+      <Navabar/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/signin' element={<Signin/>}/>
