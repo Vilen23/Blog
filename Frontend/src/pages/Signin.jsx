@@ -4,14 +4,19 @@ import { userInfoAtom } from "../State/SignupState";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { isvalidAtom } from "../State/InputsVlid";
-import { loadingAtom } from "../State/Loading";
 import { Loading } from "../comp/Loading";
-
+import {
+  signinStart,
+  signinFailure,
+  signinSuccess,
+} from "../Redux/User/UserSlice";
+import { useDispatch, useSelector } from "react-redux";
 export function Signin() {
-  const [userInfo, setUser] = useRecoilState(userInfoAtom);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [userInfo, setUser] = useRecoilState(userInfoAtom);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
   const [isvalid, setIsvalid] = useRecoilState(isvalidAtom);
-  const [loading, setloading] = useRecoilState(loadingAtom);
 
   const onInput = () => {
     setIsvalid(true);
@@ -19,26 +24,30 @@ export function Signin() {
   const HandleSignin = async (e) => {
     e.preventDefault();
     if (userInfo.username.trim() === "" || userInfo.password.trim() === "") {
-      console.log("All fields are required");
-      setIsvalid(false);
-      return;
+      return dispatch(signinFailure("Please fill all the fields"));
     }
 
     try {
-      setloading(true);
+      dispatch(signinStart());
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         userInfo
       );
 
-      if (res.status === 200) {
-        console.log("Signin successful");
-        setloading(false);
-        navigate("/Dashboard");
+      if (res.status !== 200) {
+        dispatch(signinFailure());
+        return;
       }
+      dispatch(signinSuccess(res.data));
+      navigate("/");
+      console.log();
     } catch (error) {
-      console.error("Error during signin:", error);
-    }
+        // Extracting error message from the server response
+        const errorMessage = error.response && error.response.data 
+                             ? error.response.data.message 
+                             : "An error occurred";
+        dispatch(signinFailure(errorMessage));
+      }
   };
 
   return (
@@ -62,11 +71,11 @@ export function Signin() {
         </div>
         {/* right */}
         <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl border-b-4 border-purple-800 border-x-2 border-t-2">
-          {!isvalid && (
+          
             <div className="text-center text-red-500 pb-2  w-full">
-              Invalid Inputs
+              {errorMessage}
             </div>
-          )}
+          
 
           <div className="flex flex-col">
             <label htmlFor="Your Username" className="font-bold text-lg">
