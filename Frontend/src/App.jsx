@@ -7,6 +7,7 @@ import { About } from './pages/About'
 import { Dashboard } from './pages/Dashboard'
 import { Projects } from './pages/Projects'
 import { Navabar } from './comp/Navbar'
+import { Footer } from './comp/Footer'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/projects' element={<Projects/>}/>
       </Routes>
+      <Footer/>
     </div>
   )
 }

@@ -47,12 +47,12 @@ export function Signup() {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row items-center justify-center h-screen mx-4 md:mx-10 lg:mx-20 xl:mx-60 gap-4 ">
+      <div className="flex flex-col md:flex-row items-center justify-center h-screen mx-4 md:mx-10 lg:mx-30 xl:mx-60 gap-4  ">
         {/* left */}
         <div className="flex flex-col md:px-20 p-10 md:w-1/2 items-center md:relative top-[-50px]">
           <div className="flex items-center cursor-pointer">
             <div className="bg-gradient-to-r from-indigo-800 to-purple-800 text-white flex items-center rounded-l-2xl p-2 rounded-r-2xl md:w-full">
-              <PiGitlabLogoThin className="text-white-700 ml-2 text-3xl" />
+              <PiGitlabLogoThin className="text-white-700 ml-2 text-4xl" />
               <span className="font-bold p-1  px-2 rounded-lg text-6xl box-border md:text-8xl">
                 Lather
               </span>
@@ -65,7 +65,7 @@ export function Signup() {
           </p>
         </div>
         {/* right */}
-        <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl  ">
+        <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl border-b-8 border-purple-800 border-x-2 ">
           {!isvalid && (
             <div className="text-center text-red-500 pb-2  w-full">
               Invalid Inputs
@@ -79,7 +79,7 @@ export function Signup() {
             <input
               type="text"
               placeholder="Username"
-              className="border-b-2 bg-indigo-50 pl-2 h-[40px] rounded-md shadow-md focus:outline-indigo-700 text-black"
+              className="border-b-2 bg-indigo-50 pl-2 rounded- shadow-md focus:outline-indigo-700 text-black text-lg h-[50px]"
               id="Your Username"
               onChange={(e) => {
                 setUser({ ...userInfo, username: e.target.value });
@@ -94,7 +94,7 @@ export function Signup() {
             <input
               type="email"
               placeholder=" abc@gmail.com"
-              className="border-b-2 bg-indigo-50 pl-2 h-[40px] rounded-md shadow-md focus:outline-indigo-700 text-black"
+              className="border-b-2 bg-indigo-50 pl-2 rounded-lg shadow-md focus:outline-indigo-700 text-black text-lg h-[50px]"
               id="email"
               onChange={(e) => {
                 setUser({ ...userInfo, email: e.target.value });
@@ -109,7 +109,7 @@ export function Signup() {
             <input
               type="password"
               placeholder="Password"
-              className="border-b-2 bg-indigo-50 pl-2 h-[40px] rounded-md shadow-md focus:outline-indigo-700 text-black"
+              className="border-b-2 bg-indigo-50 pl-2  rounded- shadow-md focus:outline-indigo-700 text-black text-lg h-[50px]"
               id="password"
               onChange={(e) => {
                 setUser({ ...userInfo, password: e.target.value });
