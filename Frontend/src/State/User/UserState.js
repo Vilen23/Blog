@@ -1,10 +1,16 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
-const userAtom = atom({
-    key:"userAtom",
-    default:{}
-})
+const { persistAtom } = recoilPersist();
+const currentAtom = atom({
+  key: "currentAtom",
+  default: {
+    userlogindetails: {},
+    loading: false,
+    error: null,
+  },
+  effects_UNSTABLE: [persistAtom],
+});
 
-export {
-    userAtom
-}
+export { currentAtom };
+    

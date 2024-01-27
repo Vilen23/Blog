@@ -3,51 +3,47 @@ import { useRecoilState } from "recoil";
 import { userInfoAtom } from "../State/SignupState";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { isvalidAtom } from "../State/InputsVlid";
 import { Loading } from "../comp/Loading";
-import {
-  signinStart,
-  signinFailure,
-  signinSuccess,
-} from "../Redux/User/UserSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { currentAtom } from "../State/User/UserState";
+
 export function Signin() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [userInfo, setUser] = useRecoilState(userInfoAtom);
-  const { loading, error: errorMessage } = useSelector((state) => state.user);
-  const [isvalid, setIsvalid] = useRecoilState(isvalidAtom);
+  const [userlogin, setuserlogin] = useRecoilState(currentAtom);
 
+    console.log(userlogin.userlogindetails);
   const onInput = () => {
-    setIsvalid(true);
+    setuserlogin((prevUserLogin) => ({ ...prevUserLogin, error: null }));
   };
+
   const HandleSignin = async (e) => {
     e.preventDefault();
     if (userInfo.username.trim() === "" || userInfo.password.trim() === "") {
-      return dispatch(signinFailure("Please fill all the fields"));
+      setuserlogin((state) => ({
+        ...state,
+        error: "All the fields are needed",
+      }));
+      return;
     }
 
     try {
-      dispatch(signinStart());
+      setuserlogin((state) => ({ ...state, loading: true }));
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         userInfo
-      );
-
-      if (res.status !== 200) {
-        dispatch(signinFailure());
-        return;
+        );
+        console.log(error.message);
+      if (res.status === 200) {
+        console.log("Signin successful");
+        setuserlogin((state) => ({ ...state, userlogindetails: res.data }));
+        navigate("/Dashboard");
+        setuserlogin((state) => ({ ...state, loading: false }));
       }
-      dispatch(signinSuccess(res.data));
-      navigate("/");
-      console.log();
     } catch (error) {
-        // Extracting error message from the server response
-        const errorMessage = error.response && error.response.data 
-                             ? error.response.data.message 
-                             : "An error occurred";
-        dispatch(signinFailure(errorMessage));
-      }
+      setuserlogin((state) => ({ ...state, loading: false }));
+      const errorsmg = error.response.data.message
+      setuserlogin((state)=>({...state,error:errorsmg}))
+    }
   };
 
   return (
@@ -71,11 +67,9 @@ export function Signin() {
         </div>
         {/* right */}
         <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl border-b-4 border-purple-800 border-x-2 border-t-2">
-          
-            <div className="text-center text-red-500 pb-2  w-full">
-              {errorMessage}
-            </div>
-          
+          <div className="text-center text-red-500 pb-2  w-full">
+            {userlogin.error}
+          </div>
 
           <div className="flex flex-col">
             <label htmlFor="Your Username" className="font-bold text-lg">
@@ -112,10 +106,9 @@ export function Signin() {
             <button
               className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:shadow-lg"
               onClick={HandleSignin}
-              disabled={loading}
             >
               <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 font-bold w-[130px] text-xl focus:outline-none ">
-                {loading ? <Loading /> : "Sign In"}
+                {userlogin.loading ? <Loading /> : "Sign In"}
               </span>
             </button>
           </div>

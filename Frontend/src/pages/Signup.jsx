@@ -79,7 +79,7 @@ export function Signup() {
             <input
               type="text"
               placeholder="Username"
-              className="border-b-2 bg-indigo-50 pl-2 rounded- shadow-md focus:outline-indigo-700 text-black text-lg h-[50px]"
+              className="border-b-2 border-purple-700  pl-2 drop-shadow-sm focus:outline-none text-black text-lg h-[50px]"
               id="Your Username"
               onChange={(e) => {
                 setUser({ ...userInfo, username: e.target.value });
@@ -94,7 +94,7 @@ export function Signup() {
             <input
               type="email"
               placeholder=" abc@gmail.com"
-              className="border-b-2 bg-indigo-50 pl-2 rounded-lg shadow-md focus:outline-indigo-700 text-black text-lg h-[50px]"
+              className="border-b-2 border-purple-700  pl-2 drop-shadow-sm focus:outline-none text-black text-lg h-[50px]"
               id="email"
               onChange={(e) => {
                 setUser({ ...userInfo, email: e.target.value });
@@ -109,7 +109,7 @@ export function Signup() {
             <input
               type="password"
               placeholder="Password"
-              className="border-b-2 bg-indigo-50 pl-2  rounded- shadow-md focus:outline-indigo-700 text-black text-lg h-[50px]"
+              className="border-b-2 border-purple-700  pl-2 drop-shadow-sm focus:outline-none text-black text-lg h-[50px]"
               id="password"
               onChange={(e) => {
                 setUser({ ...userInfo, password: e.target.value });
