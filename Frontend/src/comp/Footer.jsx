@@ -5,8 +5,8 @@ import { FaGithub } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 export function Footer() {
   return (
-    <div className="flex flex-col pb-10 ">
-      <div className="border-t-8 border-purple-800 rounded-2xl py-4 md:flex md:justify-between md:px-[150px] md:items-center   ">
+    <div className="flex flex-col pb-10 mt-[100px] ">
+      <div className="border-t-2 border-black pt-10  py-4 md:flex md:justify-between md:px-[150px] md:items-center   ">
         <div>
           <div
             className="flex items-center md:ml-10 ml-4 cursor-pointer"
@@ -60,7 +60,7 @@ export function Footer() {
       <div className="pl-[7%] md:pl-[4%] mt-6 flex gap-4 text-gray-700 ">
       <FaFacebook className="text-3xl hover:text-black  cursor-pointer"/>
       <FaGithub  className="text-3xl hover:text-black  cursor-pointer"/>
-      <FaInstagram className="text-3xl hover:text-black  cursor-pointer"/>
+      <a href="http://instagram.com"><FaInstagram className="text-3xl hover:text-black  cursor-pointer" /></a>
       </div>
     </div>
   );

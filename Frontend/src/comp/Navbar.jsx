@@ -48,7 +48,7 @@ export function Navabar() {
         </div>
         <div className="flex items-center justify-center">
           <div
-            className="flex mr-10 items-center gap-2 bg-gradient-to-r from-violet-700 to-purple-700 h-[40px] p-2 pr-3 text-white rounded-lg cursor-pointer "
+            className="flex mr-10 items-center gap-2 bg-gradient-to-r from-violet-700 to-purple-700 h-[35px] md:h-[40px] p-2 pr-3 text-white rounded-lg cursor-pointer "
             onClick={() => {
               navigate("/signin");
             }}
@@ -57,7 +57,7 @@ export function Navabar() {
             <span className="font-bold  ">Signin</span>
           </div>
           
-          <div className="mr-10 md:hidden cursor-pointer" onClick={()=>{
+          <div className="mr-2 md:hidden cursor-pointer" onClick={()=>{
             setismenu(!ismenu)
           }}>
             <IoMenu className="text-purple-900 font-bold text-2xl" />

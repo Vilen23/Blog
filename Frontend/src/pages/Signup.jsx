@@ -46,7 +46,7 @@ export function Signup() {
   };
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <div className="flex flex-col md:flex-row items-center justify-center h-screen mx-4 md:mx-10 lg:mx-30 xl:mx-60 gap-4  ">
         {/* left */}
         <div className="flex flex-col md:px-20 p-10 md:w-1/2 items-center md:relative top-[-50px]">
@@ -65,7 +65,7 @@ export function Signup() {
           </p>
         </div>
         {/* right */}
-        <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl border-b-8 border-purple-800 border-x-2 ">
+        <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl border-b-4 border-purple-800 border-x-2 border-t-2">
           {!isvalid && (
             <div className="text-center text-red-500 pb-2  w-full">
               Invalid Inputs
