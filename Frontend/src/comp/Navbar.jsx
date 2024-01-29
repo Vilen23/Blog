@@ -6,14 +6,23 @@ import { CiLogin } from "react-icons/ci";
 import { menuAtom } from "../State/Navbar/Menu";
 import { IoMenu } from "react-icons/io5";
 import { MenuBlock } from "./MenuBlock";
+import { currentAtom } from "../State/User/UserState";
+import { Avatar, Dropdown, DropdownDivider } from "flowbite-react";
 
 export function Navabar() {
   const items = useRecoilValue(itemsAtom);
+  const currentUser = useRecoilValue(currentAtom);
   const navigate = useNavigate();
   const [ismenu, setismenu] = useRecoilState(menuAtom);
+
+  console.log(currentUser);
   return (
     <div>
-      <nav className={`flex h-[60px] md:h-[70px] border-b-2 shadow-purple-200 shadow-sm justify-between items-center ${ismenu ? 'menu-open' : ''}`}>
+      <nav
+        className={`flex h-[60px] md:h-[70px] border-b-2 shadow-purple-200 shadow-sm justify-between items-center ${
+          ismenu ? "menu-open" : ""
+        }`}
+      >
         <div
           className="flex items-center md:ml-10 ml-4 cursor-pointer"
           onClick={() => {
@@ -46,24 +55,51 @@ export function Navabar() {
             })}
           </div>
         </div>
-        <div className="flex items-center justify-center">
-          <div
-            className="flex mr-10 items-center gap-2 bg-gradient-to-r from-violet-700 to-purple-700 h-[35px] md:h-[40px] p-2 pr-3 text-white rounded-lg cursor-pointer "
-            onClick={() => {
-              navigate("/signin");
-            }}
-          >
-            <CiLogin className="text-2xl " />
-            <span className="font-bold  ">Signin</span>
+        {currentUser.username ? (
+          <div className="flex items-center justify-center mr-10 gap-2 text-center">
+            <Dropdown className=""
+              arrowIcon={false}
+              inline
+              label={
+                <Avatar alt="User" img={currentUser.profilepicture} rounded />
+              }
+            >
+              <Dropdown.Header>
+                <span className="block text-md font-bold">
+                  @{currentUser.username}
+                </span>
+                <span className="truncate text-sm">
+                  {currentUser.email}
+                </span>
+              </Dropdown.Header>
+              <Dropdown.Item onClick={()=>{
+                navigate("/dashboard?tab=profile")
+              }} className=" flex justify-center">Profile</Dropdown.Item>
+              <DropdownDivider></DropdownDivider>
+              <Dropdown.Item className="flex justify-center">Sign out</Dropdown.Item>
+            </Dropdown>
+            <div
+              className="mr-2 md:hidden cursor-pointer"
+              onClick={() => {
+                setismenu(!ismenu);
+              }}
+            >
+              <IoMenu className="text-purple-900 font-bold text-2xl" />
+            </div>
           </div>
-          
-          <div className="mr-2 md:hidden cursor-pointer" onClick={()=>{
-            setismenu(!ismenu)
-          }}>
-            <IoMenu className="text-purple-900 font-bold text-2xl" />
+        ) : (
+          <div className="flex items-center justify-center">
+            <div
+              className="flex mr-10 items-center gap-2 bg-gradient-to-r from-violet-700 to-purple-700 h-[35px] md:h-[50px] md:w-[120px] md:flex md:justify-center p-2 pr-3 text-white rounded-lg cursor-pointer "
+              onClick={() => {
+                navigate("/signin");
+              }}
+            >
+              <CiLogin className="text-2xl " />
+              <span className="font-bold  ">Sign In</span>
+            </div>
           </div>
-        
-        </div>
+        )}
       </nav>
       {ismenu && (
         <div className="md:hidden fixed top-[60px] left-0 w-full  bg-gradient-to-b from-indigo-800 to-purple-800 opacity-95 transition-opacity duration-300">

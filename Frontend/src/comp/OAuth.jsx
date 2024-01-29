@@ -1,12 +1,13 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "../firebase";
 import { useRecoilState } from "recoil";
-import { currentAtom } from "../State/User/UserState";
+import { currentAtom, errorAtom } from "../State/User/UserState";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export function OAuth() {
   const [userdetails, setuserDetails] = useRecoilState(currentAtom);
+  const [error,setErorr]=useRecoilState(errorAtom)
   const navigate = useNavigate();
   const auth = getAuth(app);
   const HandleGoogleClick = async () => {
@@ -22,16 +23,16 @@ export function OAuth() {
       });
       if (res.status === 200) {
         console.log("hi there")
-        setuserDetails((state)=>({...state,userlogindetails:res.data}));
+        setuserDetails(res.data);
         navigate("/dashboard");
 
         
     }
 } catch (error) {
-    setuserDetails((state)=>({...state,error:error}))
+    setErorr(error);
     console.log(error);
 }
-console.log(userdetails.userlogindetails)
+console.log(userdetails)
   };
   return (
     <div>
