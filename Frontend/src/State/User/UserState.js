@@ -5,12 +5,19 @@ const { persistAtom } = recoilPersist();
 const currentAtom = atom({
   key: "currentAtom",
   default: {
-    userlogindetails: {},
-    loading: false,
-    error: null,
   },
   effects_UNSTABLE: [persistAtom],
 });
 
-export { currentAtom };
+const loadingAtom = atom({
+  key: "loadingAtom",
+  default:false
+})
+
+const errorAtom = atom({
+  key: "errorAtom",
+  default:""
+})
+
+export { currentAtom,loadingAtom,errorAtom };
     

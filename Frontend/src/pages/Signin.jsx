@@ -1,48 +1,63 @@
 import { PiGitlabLogoThin } from "react-icons/pi";
-import { useRecoilState } from "recoil";
+import {
+  constSelector,
+  useRecoilState,
+  waitForAll,
+  waitForAllSettled,
+} from "recoil";
 import { userInfoAtom } from "../State/SignupState";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { isvalidAtom } from "../State/InputsVlid";
+import { loadingAtom } from "../State/Loading";
 import { Loading } from "../comp/Loading";
-import { currentAtom } from "../State/User/UserState";
+import { OAuth } from "../comp/OAuth";
+import { currentAtom, errorAtom } from "../State/User/UserState";
+import { useEffect } from "react";
 
 export function Signin() {
   const navigate = useNavigate();
   const [userInfo, setUser] = useRecoilState(userInfoAtom);
-  const [userlogin, setuserlogin] = useRecoilState(currentAtom);
+  const [isvalid, setIsvalid] = useRecoilState(isvalidAtom);
+  const [userdetails, setuserdetails] = useRecoilState(currentAtom);
+  const [loading, setloading] = useRecoilState(loadingAtom);
+  const [error, setError] = useRecoilState(errorAtom);
 
-    console.log(userlogin.userlogindetails);
   const onInput = () => {
-    setuserlogin((prevUserLogin) => ({ ...prevUserLogin, error: null }));
+    setIsvalid(true);
+    setError("");
   };
+  useEffect(() => {
+    setloading(false);
+    setError("");
+  });
 
   const HandleSignin = async (e) => {
     e.preventDefault();
     if (userInfo.username.trim() === "" || userInfo.password.trim() === "") {
-      setuserlogin((state) => ({
-        ...state,
-        error: "All the fields are needed",
-      }));
+      setError("All the fields are required");
+      setIsvalid(false);
       return;
     }
 
     try {
-      setuserlogin((state) => ({ ...state, loading: true }));
+      console.log("starting signin");
+      setloading(true);
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         userInfo
-        );
-        console.log(error.message);
+      );
+
       if (res.status === 200) {
         console.log("Signin successful");
-        setuserlogin((state) => ({ ...state, userlogindetails: res.data }));
-        navigate("/Dashboard");
-        setuserlogin((state) => ({ ...state, loading: false }));
+        setuserdetails(res.data);
+        navigate("/");
       }
     } catch (error) {
-      setuserlogin((state) => ({ ...state, loading: false }));
-      const errorsmg = error.response.data.message
-      setuserlogin((state)=>({...state,error:errorsmg}))
+      console.error("Error during signin:", error);
+      setError("Error during signin");
+    } finally {
+      setloading(false);
     }
   };
 
@@ -67,9 +82,9 @@ export function Signin() {
         </div>
         {/* right */}
         <div className="flex flex-col w-full md:w-1/2 gap-2 p-10 md:p-[80px] shadow-sm rounded-3xl border-b-4 border-purple-800 border-x-2 border-t-2">
-          <div className="text-center text-red-500 pb-2  w-full">
-            {userlogin.error}
-          </div>
+          {!isvalid && (
+            <div className="text-center text-red-500 pb-2  w-full">{error}</div>
+          )}
 
           <div className="flex flex-col">
             <label htmlFor="Your Username" className="font-bold text-lg">
@@ -93,7 +108,7 @@ export function Signin() {
             </label>
             <input
               type="password"
-              placeholder="**********"
+              placeholder="Password"
               className="border-b-2 border-purple-700  pl-2 drop-shadow-sm focus:outline-none text-black text-lg h-[50px]"
               id="password"
               onChange={(e) => {
@@ -102,18 +117,20 @@ export function Signin() {
               onClick={onInput}
             />
           </div>
-          <div className="flex justify-center mt-2">
+          <div className="flex flex-col items-center justify-center mt-2">
             <button
               className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:shadow-lg"
               onClick={HandleSignin}
+              disabled={loading}
             >
               <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0 font-bold w-[130px] text-xl focus:outline-none ">
-                {userlogin.loading ? <Loading /> : "Sign In"}
+                {loading ? <Loading /> : "Sign In"}
               </span>
             </button>
+            <OAuth></OAuth>
           </div>
           <div className="flex justify-center items-center gap-2">
-            <p className=" text-xl">Do not have an account?</p>
+            <p className=" text-xl">Already have an account?</p>
             <p
               className=" text-lg cursor-pointer text-blue-500 underline "
               onClick={() => {
