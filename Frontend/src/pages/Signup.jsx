@@ -4,9 +4,9 @@ import { userInfoAtom } from "../State/SignupState";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { isvalidAtom } from "../State/InputsVlid";
-import { loadingAtom } from "../State/Loading";
 import { Loading } from "../comp/Loading";
 import { OAuth } from "../comp/OAuth";
+import { loadingAtom } from "../State/User/UserState";
 
 export function Signup() {
   const [userInfo, setUser] = useRecoilState(userInfoAtom);

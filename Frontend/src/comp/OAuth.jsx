@@ -24,7 +24,7 @@ export function OAuth() {
       if (res.status === 200) {
         console.log("hi there")
         setuserDetails(res.data);
-        navigate("/dashboard");
+        navigate("/dashboard?tab=profile");
 
         
     }

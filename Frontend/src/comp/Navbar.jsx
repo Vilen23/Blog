@@ -55,28 +55,39 @@ export function Navabar() {
             })}
           </div>
         </div>
-        {currentUser.username ? (
-          <div className="flex items-center justify-center mr-10 gap-2 text-center">
-            <Dropdown className=""
+        {currentUser._id ? (
+          <div className="flex items-center justify-center mr-4 md:mr-10 gap-2 text-center">
+            <Dropdown
+              className=""
               arrowIcon={false}
               inline
               label={
-                <Avatar alt="User" img={currentUser.profilepicture} rounded />
+                <Avatar
+                  alt="User"
+                  img={currentUser.profilepicture}
+                  rounded
+                  className="object-cover bg-cover rounded-full w-[40px] h-full text-3xl"
+                />
               }
             >
               <Dropdown.Header>
                 <span className="block text-md font-bold">
                   @{currentUser.username}
                 </span>
-                <span className="truncate text-sm">
-                  {currentUser.email}
-                </span>
+                <span className="truncate text-sm">{currentUser.email}</span>
               </Dropdown.Header>
-              <Dropdown.Item onClick={()=>{
-                navigate("/dashboard?tab=profile")
-              }} className=" flex justify-center">Profile</Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  navigate("/dashboard?tab=profile");
+                }}
+                className=" flex justify-center"
+              >
+                Profile
+              </Dropdown.Item>
               <DropdownDivider></DropdownDivider>
-              <Dropdown.Item className="flex justify-center">Sign out</Dropdown.Item>
+              <Dropdown.Item className="flex justify-center">
+                Sign out
+              </Dropdown.Item>
             </Dropdown>
             <div
               className="mr-2 md:hidden cursor-pointer"

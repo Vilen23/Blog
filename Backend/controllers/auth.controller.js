@@ -79,21 +79,66 @@ const google = async (req, res, next) => {
         .json(rest);
     } else {
       const generatepass = Math.random().toString(36).slice(-8);
-      const hashpassword = await  bcrypt.hash(generatepass, 10);
+      const hashpassword = await bcrypt.hash(generatepass, 10);
       const user = new User({
-        username:name.toLowerCase().split(" ").join("") + Math.random().toString(9).slice(-4),
+        username:
+          name.toLowerCase().split(" ").join("") +
+          Math.random().toString(9).slice(-4),
         password: hashpassword,
         profilepicture: googlephotourl,
         email: email,
       });
       await user.save();
-      const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
-      const {password,...rest} = user._doc
-      res.status(200).cookie('access_token',token,{
-        httpOnly:true
-      }).json(rest)
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = user._doc;
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
     }
   } catch (error) {
+    next(error);
+  }
+};
+const update = async (req, res, next) => {
+  const { username, email, password, profilepicture, _id } = req.body;
+
+  try {
+    const user = await User.findOne({ _id });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Check if the password is provided and changed
+    if (password) {
+      const isPassChanged = await bcrypt.compare(password, user.password);
+
+      if (!isPassChanged) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.findOneAndUpdate(
+          { _id },
+          { username, email, password: hashedPassword, profilepicture }
+        );
+      }
+    } else {
+      // If no password is provided, update other fields including the password
+      const update = await User.findOneAndUpdate(
+        { _id },
+        { username, email, password: user.password, profilepicture }
+      );
+    }
+    
+    console.log(update);
+    res.status(200).json({
+      message: "User updated successfully",
+    });
+  } catch (error) {
+    console.error(error);
     next(error);
   }
 };
@@ -102,4 +147,5 @@ module.exports = {
   signup,
   signin,
   google,
+  update,
 };

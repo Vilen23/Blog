@@ -1,18 +1,14 @@
 import { PiGitlabLogoThin } from "react-icons/pi";
 import {
-  constSelector,
   useRecoilState,
-  waitForAll,
-  waitForAllSettled,
 } from "recoil";
 import { userInfoAtom } from "../State/SignupState";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { isvalidAtom } from "../State/InputsVlid";
-import { loadingAtom } from "../State/Loading";
 import { Loading } from "../comp/Loading";
 import { OAuth } from "../comp/OAuth";
-import { currentAtom, errorAtom } from "../State/User/UserState";
+import { currentAtom, errorAtom, loadingAtom } from "../State/User/UserState";
 import { useEffect } from "react";
 
 export function Signin() {

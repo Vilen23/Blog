@@ -19,5 +19,9 @@ const errorAtom = atom({
   default:""
 })
 
-export { currentAtom,loadingAtom,errorAtom };
+const updateAtom = atom({
+  key:"updateAtom",
+  default:currentAtom
+})
+export { currentAtom,loadingAtom,errorAtom,updateAtom };
     
