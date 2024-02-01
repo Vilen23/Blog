@@ -27,7 +27,6 @@ export function Signin() {
     setloading(false);
     setError("");
   });
-
   const HandleSignin = async (e) => {
     e.preventDefault();
     if (userInfo.username.trim() === "" || userInfo.password.trim() === "") {
@@ -35,28 +34,28 @@ export function Signin() {
       setIsvalid(false);
       return;
     }
-
+    
     try {
       console.log("starting signin");
       setloading(true);
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         userInfo
-      );
-
-      if (res.status === 200) {
-        console.log("Signin successful");
-        setuserdetails(res.data);
-        navigate("/");
+        );
+        
+        if (res.status === 200) {
+          console.log("Signin successful");
+          setuserdetails(res.data);
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error during signin:", error);
+        setError("Error during signin");
+      } finally {
+        setloading(false);
       }
-    } catch (error) {
-      console.error("Error during signin:", error);
-      setError("Error during signin");
-    } finally {
-      setloading(false);
-    }
-  };
-
+    };
+    
   return (
     <div className="overflow-x-hidden">
       <div className="flex flex-col md:flex-row items-center justify-center h-screen mx-4 md:mx-10 lg:mx-30 xl:mx-60 gap-4  ">

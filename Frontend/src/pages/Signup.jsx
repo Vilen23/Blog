@@ -39,7 +39,7 @@ export function Signup() {
       if (res.status === 200) {
         console.log("Signup successful");
         setloading(false);
-        navigate("/");
+        navigate("/signin");
       }
     } catch (error) {
       console.error("Error during signup:", error);

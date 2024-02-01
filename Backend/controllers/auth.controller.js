@@ -4,6 +4,7 @@ const { hashpass } = require("./pass.hash");
 const { errorHandler } = require("../utils/error");
 const jwt = require("jsonwebtoken");
 
+//Sign Up API
 const signup = async (req, res, next) => {
   const { username, password, email } = req.body;
 
@@ -31,6 +32,7 @@ const signup = async (req, res, next) => {
   }
 };
 
+//Sign in API
 const signin = async (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -56,7 +58,7 @@ const signin = async (req, res, next) => {
     res
       .status(200)
       .cookie("access_token", token, {
-        httponly: true,
+        httpOnly: true,
       })
       .json(rest);
   } catch (error) {
@@ -64,6 +66,7 @@ const signin = async (req, res, next) => {
   }
 };
 
+//Google Login API
 const google = async (req, res, next) => {
   const { name, email, googlephotourl } = req.body;
   try {
@@ -102,6 +105,8 @@ const google = async (req, res, next) => {
     next(error);
   }
 };
+
+//Update Information API
 const update = async (req, res, next) => {
   const { username, email, password, profilepicture, _id } = req.body;
 
@@ -132,8 +137,6 @@ const update = async (req, res, next) => {
         { username, email, password: user.password, profilepicture }
       );
     }
-    
-    console.log(update);
     res.status(200).json({
       message: "User updated successfully",
     });
@@ -143,9 +146,20 @@ const update = async (req, res, next) => {
   }
 };
 
+const deleteuser = async (req, res, next) => {
+
+  try {
+    await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json("User has been deleted");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   signin,
   google,
   update,
+  deleteuser,
 };

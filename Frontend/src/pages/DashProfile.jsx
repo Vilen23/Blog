@@ -1,23 +1,32 @@
-import {  useRecoilState } from "recoil";
-import { currentAtom, loadingAtom, updateAtom } from "../State/User/UserState";
-import { Alert, Button, TextInput } from "flowbite-react";
+import { useRecoilState } from "recoil";
+import { currentAtom, errorAtom, loadingAtom, updateAtom } from "../State/User/UserState";
+import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { Loading } from "../comp/Loading";
 import axios from "axios";
-import {getDownloadURL, getStorage, uploadBytesResumable,ref} from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  uploadBytesResumable,
+  ref,
+} from "firebase/storage";
 import { app } from "../firebase";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 export function DashProfile() {
+  const navigate = useNavigate();
+  const [error, setError] = useRecoilState(errorAtom);
   const [currentUser, setcurrentUser] = useRecoilState(currentAtom);
-  const [update,setUpdate] = useRecoilState(updateAtom);
-  const [uploadimageprogress, setuploadimageprogress] = useState(null)
-  const [uploadingimageerror, setuploadingimageerror] = useState(null)
+  const [update, setUpdate] = useRecoilState(updateAtom);
+  const [uploadimageprogress, setuploadimageprogress] = useState(null);
+  const [uploadingimageerror, setuploadingimageerror] = useState(null);
   const [image, setImage] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const filepickref = useRef();
   const [loading, setLoading] = useRecoilState(loadingAtom);
+  const [showModal, setShowModal] = useState(false);
 
-  
   const HandleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -25,59 +34,92 @@ export function DashProfile() {
       setImgUrl(URL.createObjectURL(file));
     }
   };
+  console.log(update);
+
+  useEffect(() => {
+    if (image) {
+      uploadimage();
+    }
+  }, [image]);
+  const uploadimage = async () => {
+    const storage = getStorage(app);
+    const fileName = new Date().getDate() + image.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setuploadimageprogress(progress.toFixed(0));
+      },
+      (error) => {
+        setuploadingimageerror("Size more than 2 MB");
+      },
+      async () => {
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        await setImgUrl(downloadURL); // Update imgUrl state
+        setUpdate((prev) => ({ ...prev, profilepicture: downloadURL }));
+        console.log("updated image");
+      }
+    );
+  };
+
   const UpdateTheData = async (e) => {
-    e.preventDefault();
     try {
+      setcurrentUser(update);
+      console.log("update=current ");
       setLoading(true);
-      setUpdate((state) => ({ ...state })); // Update state immediately
-      console.log(update);
       const res = await axios.put(
         "http://localhost:3000/api/auth/update",
         update
       );
+
       if (res.status === 200) {
         console.log("Successfully updated");
         setLoading(false);
-        setcurrentUser(update)
+        setcurrentUser(update);
       }
     } catch (error) {
+      console.log(error);
+      setError(error);
+      setLoading(false);
+    }
+  };
+
+  const HandleDeleteUser = async (e) => {
+    try {
+      setLoading(true);
+      const res = await axios.delete(
+        `http://localhost:3000/api/user/delete/${currentUser._id}`
+      );
+      if (res.status === 200) {
+        setShowModal(false);
+        setcurrentUser({});
+        setUpdate({});
+        navigate("/signup");
+        setLoading(false);
+      }
+    } catch (error) {
+      setError(error);
       console.log(error);
       setLoading(false);
     }
   };
 
-  useEffect(()=>{
-    if(image){
-      uploadimage();
+
+  //Signout 
+  const HandleSignOut = async (e) => {
+    try {
+      setcurrentUser({});
+      navigate("/signin")
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      console.log(error)
     }
-  },[image])
-
-  console.log(uploadimageprogress);
-  const uploadimage = async ()=>{
-    const storage = getStorage(app);
-    const fileName = new Date().getDate() +  image.name;
-    const storageRef = ref(storage,fileName);
-    const uploadTask = uploadBytesResumable(storageRef,image)
-    uploadTask.on(
-      'state_changed',
-      (snapshot)=>{
-        const progress = (snapshot.bytesTransferred/snapshot.totalBytes) * 100;
-        setuploadimageprogress(progress.toFixed(0));
-      },
-      (error)=>{
-        setuploadingimageerror('Size more than 2 MB')
-      },
-      async ()=>{
-         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL)=>{
-          setImgUrl(downloadURL);
-          setUpdate((prev)=>({...prev,profilepicture:imgUrl}))
-        })
-      }
-    )
   }
-  console.log(imgUrl);
-  console.log(uploadingimageerror)
-
   return (
     <div className="max-w-lg mx-auto w-full ">
       <h1 className="text-center my-7 font-semibold text-3xl">Profile</h1>
@@ -101,9 +143,9 @@ export function DashProfile() {
             className="object-cover bg-cover h-full w-full rounded-full border-2 border-purple-700 "
           />
         </div>
-          {uploadingimageerror &&(
-            <Alert color='failure'>{uploadingimageerror}</Alert>
-          )}
+        {uploadingimageerror && (
+          <Alert color="failure">{uploadingimageerror}</Alert>
+        )}
         <TextInput
           type="text"
           id="username"
@@ -130,18 +172,19 @@ export function DashProfile() {
             setUpdate((prev) => ({ ...prev, password: e.target.value }));
           }}
         />
-        <div className="w-full"> 
+        <div className="w-full">
           {loading ? (
             <Button
-            type="button"
-            gradientDuoTone="purpleToPink"
-            className="font-bold text-xl w-full"
-            outline
-            onClick={UpdateTheData}
-            
-          >
-            <p className="text-xl"><Loading/></p>
-          </Button>
+              type="button"
+              gradientDuoTone="purpleToPink"
+              className="font-bold text-xl w-full"
+              outline
+              onClick={UpdateTheData}
+            >
+              <p className="text-xl">
+                <Loading />
+              </p>
+            </Button>
           ) : (
             <Button
               type="button"
@@ -149,20 +192,62 @@ export function DashProfile() {
               className="font-bold text-xl w-full"
               outline
               onClick={UpdateTheData}
-              
             >
               <p className="text-xl">Update</p>
             </Button>
           )}
         </div>
         <div className="flex justify-between">
-          <span className="text-red-500 hover:underline cursor-pointer font-semibold">
+          <span
+            className="text-red-500 hover:underline cursor-pointer font-semibold"
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
             Delete your account
           </span>
-          <span className="text-red-500 hover:underline cursor-pointer font-semibold">
+          <span className="text-red-500 hover:underline cursor-pointer font-semibold"
+          onClick={HandleSignOut}>
             Signout
           </span>
         </div>
+        {error && <Alert color="failure">{error}</Alert>}
+        <Modal
+          show={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          popup
+          size="md"
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <div className="text-center ">
+              <HiOutlineExclamationCircle className="text-9xl text-gray-500 mx-auto" />
+              <h3 className="text-lg text-gray-500">
+                Are you sure you want to delete your account?
+              </h3>
+              <div className="flex justify-center gap-20 mt-4">
+                <button
+                  type="button"
+                  className="w-[100px] h-[50px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
+                  onClick={HandleDeleteUser}
+                >
+                  <p className="text-xl">Delete</p>
+                </button>
+                <button
+                  type="button"
+                  className="w-[100px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
+                  onClick={() => {
+                    setShowModal(false);
+                  }}
+                >
+                  <p className="text-xl">Cancel</p>
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     </div>
   );
