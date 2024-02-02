@@ -1,11 +1,21 @@
 import { useRecoilState } from "recoil";
-import {currentAtom,errorAtom,loadingAtom,updateAtom,} from "../State/User/UserState";
+import {
+  currentAtom,
+  errorAtom,
+  loadingAtom,
+  updateAtom,
+} from "../State/User/UserState";
 import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Loading } from "../comp/Loading";
 import axios from "axios";
-import {getDownloadURL,getStorage,uploadBytesResumable,ref,} from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  uploadBytesResumable,
+  ref,
+} from "firebase/storage";
 import { app } from "../firebase";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
@@ -22,6 +32,7 @@ export function DashProfile() {
   const filepickref = useRef();
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [showModal, setShowModal] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(null);
 
   console.log(update);
   const HandleImageChange = (e) => {
@@ -34,12 +45,12 @@ export function DashProfile() {
 
   //This is to set the update state to the current user state when the component is mounted
   useEffect(() => {
-    setLoading(true);
+    setLoadingPage(true);
     setUpdate(currentUser);
-    setLoading(false);
-  }, []);
+    setLoadingPage(false);
+  }, [loadingPage]);
 
-//This is to call the uploadimage function when the image state is updated
+  //This is to call the uploadimage function when the image state is updated
   useEffect(() => {
     setLoading(true);
     if (image) {
@@ -132,7 +143,7 @@ export function DashProfile() {
   };
   return (
     <>
-      {!loading && (
+      {!loadingPage && (
         <div className="max-w-lg mx-auto w-full ">
           <h1 className="text-center my-7 font-semibold text-3xl">Profile</h1>
           <div className="flex flex-col mx-4 md:mx-0 gap-4">
@@ -209,6 +220,19 @@ export function DashProfile() {
                 </Button>
               )}
             </div>
+            {currentUser.isAdmin && (
+              <Button
+                type="button"
+                gradientDuoTone="purpleToPink"
+                className="w-full font-bold text-3xl"
+                outline
+                onClick={()=>{
+                  navigate("/create-post")
+                }}
+              >
+                <p className="text-xl">Create Post</p>
+              </Button>
+            )}
             <div className="flex justify-between">
               <span
                 className="text-red-500 hover:underline cursor-pointer font-semibold"

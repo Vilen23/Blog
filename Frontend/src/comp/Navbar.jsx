@@ -6,14 +6,29 @@ import { CiLogin } from "react-icons/ci";
 import { menuAtom } from "../State/Navbar/Menu";
 import { IoMenu } from "react-icons/io5";
 import { MenuBlock } from "./MenuBlock";
-import { currentAtom } from "../State/User/UserState";
+import { currentAtom, errorAtom, loadingAtom } from "../State/User/UserState";
 import { Avatar, Dropdown, DropdownDivider } from "flowbite-react";
 
 export function Navabar() {
   const items = useRecoilValue(itemsAtom);
-  const currentUser = useRecoilValue(currentAtom);
   const navigate = useNavigate();
+  const [currentUser,setcurrentUser] = useRecoilState(currentAtom);
+  const [error, setError] = useRecoilState(errorAtom);
+  const [loading, setLoading] = useRecoilState(loadingAtom);
   const [ismenu, setismenu] = useRecoilState(menuAtom);
+
+
+    //Signout
+    const HandleSignOut = async (e) => {
+      try {
+        setcurrentUser({});
+        navigate("/signin");
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+        console.log(error);
+      }
+    };
 
   return (
     <div>
@@ -84,7 +99,7 @@ export function Navabar() {
                 Profile
               </Dropdown.Item>
               <DropdownDivider></DropdownDivider>
-              <Dropdown.Item className="flex justify-center">
+              <Dropdown.Item className="flex justify-center" onClick={HandleSignOut}>
                 Sign out
               </Dropdown.Item>
             </Dropdown>

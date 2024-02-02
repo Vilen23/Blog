@@ -9,7 +9,9 @@ import { Projects } from "./pages/Projects";
 import { Navabar } from "./comp/Navbar";
 import { Footer } from "./comp/Footer";
 import { Privateroute } from "./comp/Privateroute";
-import axios from "axios";  
+import axios from "axios";
+import { AdminOnlyPrivateRoute } from "./comp/AdminOnlyPrivateRoute";
+import { CreatePost } from "./pages/CreatePost";
 function App() {
   axios.defaults.withCredentials = true;
   return (
@@ -24,6 +26,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
         <Route path="/projects" element={<Projects />} />
+        <Route element={<AdminOnlyPrivateRoute />}>
+          <Route path="/create-post" element={<CreatePost />} />
+        </Route>
       </Routes>
       <Footer />
     </div>

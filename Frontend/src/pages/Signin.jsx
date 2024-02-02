@@ -18,6 +18,9 @@ export function Signin() {
   const [loading, setloading] = useRecoilState(loadingAtom);
   const [error, setError] = useRecoilState(errorAtom);
 
+  useEffect(() => {
+    setuserdetails({})
+  },[]);
 
   const onInput = () => {
     setIsvalid(true);
@@ -46,7 +49,7 @@ export function Signin() {
       if (res.status === 200) {
         console.log("Signin successful");
         setuserdetails(res.data);
-        navigate("/");
+        navigate("/dashboard?tab=profile");
       }
     } catch (error) {
       console.error("Error during signin:", error);
