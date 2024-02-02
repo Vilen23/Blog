@@ -15,7 +15,6 @@ export function Navabar() {
   const navigate = useNavigate();
   const [ismenu, setismenu] = useRecoilState(menuAtom);
 
-  console.log(currentUser);
   return (
     <div>
       <nav

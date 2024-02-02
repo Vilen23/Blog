@@ -1,7 +1,5 @@
 import { PiGitlabLogoThin } from "react-icons/pi";
-import {
-  useRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 import { userInfoAtom } from "../State/SignupState";
 import axios from "axios";
 import { useNavigate } from "react-router";
@@ -12,12 +10,14 @@ import { currentAtom, errorAtom, loadingAtom } from "../State/User/UserState";
 import { useEffect } from "react";
 
 export function Signin() {
+  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const [userInfo, setUser] = useRecoilState(userInfoAtom);
   const [isvalid, setIsvalid] = useRecoilState(isvalidAtom);
   const [userdetails, setuserdetails] = useRecoilState(currentAtom);
   const [loading, setloading] = useRecoilState(loadingAtom);
   const [error, setError] = useRecoilState(errorAtom);
+
 
   const onInput = () => {
     setIsvalid(true);
@@ -27,6 +27,7 @@ export function Signin() {
     setloading(false);
     setError("");
   });
+
   const HandleSignin = async (e) => {
     e.preventDefault();
     if (userInfo.username.trim() === "" || userInfo.password.trim() === "") {
@@ -34,28 +35,27 @@ export function Signin() {
       setIsvalid(false);
       return;
     }
-    
+
     try {
       console.log("starting signin");
       setloading(true);
       const res = await axios.post(
         "http://localhost:3000/api/auth/signin",
         userInfo
-        );
-        
-        if (res.status === 200) {
-          console.log("Signin successful");
-          setuserdetails(res.data);
-          navigate("/");
-        }
-      } catch (error) {
-        console.error("Error during signin:", error);
-        setError("Error during signin");
-      } finally {
-        setloading(false);
+      );
+      if (res.status === 200) {
+        console.log("Signin successful");
+        setuserdetails(res.data);
+        navigate("/");
       }
-    };
-    
+    } catch (error) {
+      console.error("Error during signin:", error);
+      setError("Error during signin");
+    } finally {
+      setloading(false);
+    }
+  };
+
   return (
     <div className="overflow-x-hidden">
       <div className="flex flex-col md:flex-row items-center justify-center h-screen mx-4 md:mx-10 lg:mx-30 xl:mx-60 gap-4  ">
@@ -114,7 +114,7 @@ export function Signin() {
           </div>
           <div className="flex flex-col items-center justify-center mt-2">
             <button
-              className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:shadow-lg"
+              className="relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 hover:shadow-lg"
               onClick={HandleSignin}
               disabled={loading}
             >

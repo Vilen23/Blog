@@ -9,8 +9,9 @@ import { Projects } from "./pages/Projects";
 import { Navabar } from "./comp/Navbar";
 import { Footer } from "./comp/Footer";
 import { Privateroute } from "./comp/Privateroute";
-
+import axios from "axios";  
 function App() {
+  axios.defaults.withCredentials = true;
   return (
     <div className="bg-[#ffffff] h-screen ">
       <Navabar />

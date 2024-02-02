@@ -1,20 +1,16 @@
 import { useRecoilState } from "recoil";
-import { currentAtom, errorAtom, loadingAtom, updateAtom } from "../State/User/UserState";
+import {currentAtom,errorAtom,loadingAtom,updateAtom,} from "../State/User/UserState";
 import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Loading } from "../comp/Loading";
 import axios from "axios";
-import {
-  getDownloadURL,
-  getStorage,
-  uploadBytesResumable,
-  ref,
-} from "firebase/storage";
+import {getDownloadURL,getStorage,uploadBytesResumable,ref,} from "firebase/storage";
 import { app } from "../firebase";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 export function DashProfile() {
+  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const [error, setError] = useRecoilState(errorAtom);
   const [currentUser, setcurrentUser] = useRecoilState(currentAtom);
@@ -27,6 +23,7 @@ export function DashProfile() {
   const [loading, setLoading] = useRecoilState(loadingAtom);
   const [showModal, setShowModal] = useState(false);
 
+  console.log(update);
   const HandleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -34,14 +31,26 @@ export function DashProfile() {
       setImgUrl(URL.createObjectURL(file));
     }
   };
-  console.log(update);
 
+  //This is to set the update state to the current user state when the component is mounted
   useEffect(() => {
+    setLoading(true);
+    setUpdate(currentUser);
+    setLoading(false);
+  }, []);
+
+//This is to call the uploadimage function when the image state is updated
+  useEffect(() => {
+    setLoading(true);
     if (image) {
       uploadimage();
     }
+    setLoading(false);
   }, [image]);
+
+  //This is to upload the image to the firebase storage and get the url of the image
   const uploadimage = async () => {
+    setLoading(true);
     const storage = getStorage(app);
     const fileName = new Date().getDate() + image.name;
     const storageRef = ref(storage, fileName);
@@ -61,15 +70,16 @@ export function DashProfile() {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         await setImgUrl(downloadURL); // Update imgUrl state
         setUpdate((prev) => ({ ...prev, profilepicture: downloadURL }));
-        console.log("updated image");
       }
     );
+    setLoading(false);
   };
 
+  //This is the request to update the user data
   const UpdateTheData = async (e) => {
     try {
       setcurrentUser(update);
-      console.log("update=current ");
+      // console.log(currentUser);
       setLoading(true);
       const res = await axios.put(
         "http://localhost:3000/api/auth/update",
@@ -88,6 +98,7 @@ export function DashProfile() {
     }
   };
 
+  //This is the request to delete the user
   const HandleDeleteUser = async (e) => {
     try {
       setLoading(true);
@@ -108,147 +119,152 @@ export function DashProfile() {
     }
   };
 
-
-  //Signout 
+  //Signout
   const HandleSignOut = async (e) => {
     try {
       setcurrentUser({});
-      navigate("/signin")
+      navigate("/signin");
     } catch (error) {
       setError(error);
       setLoading(false);
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
-    <div className="max-w-lg mx-auto w-full ">
-      <h1 className="text-center my-7 font-semibold text-3xl">Profile</h1>
-      <div className="flex flex-col mx-4 md:mx-0 gap-4">
-        <input
-          type="file"
-          accept="/image/*"
-          onChange={HandleImageChange}
-          ref={filepickref}
-          className="hidden"
-        />
-        <div
-          className="h-32 w-32 self-center rounded-full cursor-pointer shadow-md shadow-purple-400 overflow-hidden hover:shadow-lg hover:shadow-purple-400 "
-          onClick={() => {
-            filepickref.current.click();
-          }}
-        >
-          <img
-            src={imgUrl || currentUser.profilepicture}
-            alt="user"
-            className="object-cover bg-cover h-full w-full rounded-full border-2 border-purple-700 "
-          />
-        </div>
-        {uploadingimageerror && (
-          <Alert color="failure">{uploadingimageerror}</Alert>
-        )}
-        <TextInput
-          type="text"
-          id="username"
-          placeholder="username"
-          defaultValue={currentUser.username}
-          onChange={(e) => {
-            setUpdate((prev) => ({ ...prev, username: e.target.value }));
-          }}
-        />
-        <TextInput
-          type="email"
-          id="email"
-          placeholder="email"
-          defaultValue={currentUser.email}
-          onChange={(e) => {
-            setUpdate((prev) => ({ ...prev, email: e.target.value }));
-          }}
-        />
-        <TextInput
-          type="password"
-          id="password"
-          placeholder="password"
-          onChange={(e) => {
-            setUpdate((prev) => ({ ...prev, password: e.target.value }));
-          }}
-        />
-        <div className="w-full">
-          {loading ? (
-            <Button
-              type="button"
-              gradientDuoTone="purpleToPink"
-              className="font-bold text-xl w-full"
-              outline
-              onClick={UpdateTheData}
+    <>
+      {!loading && (
+        <div className="max-w-lg mx-auto w-full ">
+          <h1 className="text-center my-7 font-semibold text-3xl">Profile</h1>
+          <div className="flex flex-col mx-4 md:mx-0 gap-4">
+            <input
+              type="file"
+              accept="/image/*"
+              onChange={HandleImageChange}
+              ref={filepickref}
+              className="hidden"
+            />
+            <div
+              className="h-32 w-32 self-center rounded-full cursor-pointer shadow-md shadow-purple-400 overflow-hidden hover:shadow-lg hover:shadow-purple-400 "
+              onClick={() => {
+                filepickref.current.click();
+              }}
             >
-              <p className="text-xl">
-                <Loading />
-              </p>
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              gradientDuoTone="purpleToPink"
-              className="font-bold text-xl w-full"
-              outline
-              onClick={UpdateTheData}
-            >
-              <p className="text-xl">Update</p>
-            </Button>
-          )}
-        </div>
-        <div className="flex justify-between">
-          <span
-            className="text-red-500 hover:underline cursor-pointer font-semibold"
-            onClick={() => {
-              setShowModal(true);
-            }}
-          >
-            Delete your account
-          </span>
-          <span className="text-red-500 hover:underline cursor-pointer font-semibold"
-          onClick={HandleSignOut}>
-            Signout
-          </span>
-        </div>
-        {error && <Alert color="failure">{error}</Alert>}
-        <Modal
-          show={showModal}
-          onClose={() => {
-            setShowModal(false);
-          }}
-          popup
-          size="md"
-        >
-          <Modal.Header />
-          <Modal.Body>
-            <div className="text-center ">
-              <HiOutlineExclamationCircle className="text-9xl text-gray-500 mx-auto" />
-              <h3 className="text-lg text-gray-500">
-                Are you sure you want to delete your account?
-              </h3>
-              <div className="flex justify-center gap-20 mt-4">
-                <button
-                  type="button"
-                  className="w-[100px] h-[50px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
-                  onClick={HandleDeleteUser}
-                >
-                  <p className="text-xl">Delete</p>
-                </button>
-                <button
-                  type="button"
-                  className="w-[100px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
-                  onClick={() => {
-                    setShowModal(false);
-                  }}
-                >
-                  <p className="text-xl">Cancel</p>
-                </button>
-              </div>
+              <img
+                src={imgUrl || currentUser.profilepicture}
+                alt="user"
+                className="object-cover bg-cover h-full w-full rounded-full border-2 border-purple-700 "
+              />
             </div>
-          </Modal.Body>
-        </Modal>
-      </div>
-    </div>
+            {uploadingimageerror && (
+              <Alert color="failure">{uploadingimageerror}</Alert>
+            )}
+            <TextInput
+              type="text"
+              id="username"
+              placeholder="username"
+              defaultValue={currentUser.username}
+              onChange={(e) => {
+                setUpdate((prev) => ({ ...prev, username: e.target.value }));
+              }}
+            />
+            <TextInput
+              type="email"
+              id="email"
+              placeholder="email"
+              defaultValue={currentUser.email}
+              onChange={(e) => {
+                setUpdate((prev) => ({ ...prev, email: e.target.value }));
+              }}
+            />
+            <TextInput
+              type="password"
+              id="password"
+              placeholder="password"
+              onChange={(e) => {
+                setUpdate((prev) => ({ ...prev, password: e.target.value }));
+              }}
+            />
+            <div className="w-full">
+              {loading ? (
+                <Button
+                  type="button"
+                  gradientDuoTone="purpleToPink"
+                  className="font-bold text-xl w-full"
+                  outline
+                  onClick={UpdateTheData}
+                >
+                  <p className="text-xl">
+                    <Loading />
+                  </p>
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  gradientDuoTone="purpleToPink"
+                  className="font-bold text-xl w-full"
+                  outline
+                  onClick={UpdateTheData}
+                >
+                  <p className="text-xl">Update</p>
+                </Button>
+              )}
+            </div>
+            <div className="flex justify-between">
+              <span
+                className="text-red-500 hover:underline cursor-pointer font-semibold"
+                onClick={() => {
+                  setShowModal(true);
+                }}
+              >
+                Delete your account
+              </span>
+              <span
+                className="text-red-500 hover:underline cursor-pointer font-semibold"
+                onClick={HandleSignOut}
+              >
+                Signout
+              </span>
+            </div>
+            {error && <Alert color="failure">{error}</Alert>}
+            <Modal
+              show={showModal}
+              onClose={() => {
+                setShowModal(false);
+              }}
+              popup
+              size="md"
+            >
+              <Modal.Header />
+              <Modal.Body>
+                <div className="text-center ">
+                  <HiOutlineExclamationCircle className="text-9xl text-gray-500 mx-auto" />
+                  <h3 className="text-lg text-gray-500">
+                    Are you sure you want to delete your account?
+                  </h3>
+                  <div className="flex justify-center gap-20 mt-4">
+                    <button
+                      type="button"
+                      className="w-[100px] h-[50px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
+                      onClick={HandleDeleteUser}
+                    >
+                      <p className="text-xl">Delete</p>
+                    </button>
+                    <button
+                      type="button"
+                      className="w-[100px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
+                      onClick={() => {
+                        setShowModal(false);
+                      }}
+                    >
+                      <p className="text-xl">Cancel</p>
+                    </button>
+                  </div>
+                </div>
+              </Modal.Body>
+            </Modal>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
