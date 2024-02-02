@@ -51,6 +51,7 @@ const signin = async (req, res, next) => {
     const token = jwt.sign(
       {
         id: validuser._id,
+        isAdmin: validuser.isAdmin,
       },
       process.env.JWT_SECRET
     );
@@ -72,7 +73,10 @@ const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET
+      );
       const { password, ...rest } = user._doc;
       res
         .status(200)
@@ -92,7 +96,10 @@ const google = async (req, res, next) => {
         email: email,
       });
       await user.save();
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET
+      );
       const { password, ...rest } = user._doc;
       res
         .status(200)
@@ -147,7 +154,6 @@ const update = async (req, res, next) => {
 };
 
 const deleteuser = async (req, res, next) => {
-
   try {
     await User.findByIdAndDelete(req.params.userId);
     res.status(200).json("User has been deleted");
