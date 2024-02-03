@@ -8,7 +8,7 @@ import {
 import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { Loading } from "../comp/Loading";
+import { Loading } from "./Loading";
 import axios from "axios";
 import {
   getDownloadURL,
@@ -108,7 +108,6 @@ export function DashProfile() {
       setLoading(false);
     }
   };
-
   //This is the request to delete the user
   const HandleDeleteUser = async (e) => {
     try {

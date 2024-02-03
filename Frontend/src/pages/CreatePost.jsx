@@ -97,7 +97,6 @@ export function CreatePost() {
   };
 
   const HandlePosting = async(e)=>{
-    e.preventDefault()
     try {
       setloadingcomplete(true);
       const res = await axios.post("http://localhost:3000/api/post/create",post)
