@@ -226,7 +226,7 @@ export function DashProfile() {
                 className="w-full font-bold text-3xl"
                 outline
                 onClick={()=>{
-                  navigate("/create-post")
+                  navigate("/dashboard?tab=create-post")
                 }}
               >
                 <p className="text-xl">Create Post</p>

@@ -27,7 +27,7 @@ function App() {
         </Route>
         <Route path="/projects" element={<Projects />} />
         <Route element={<AdminOnlyPrivateRoute />}>
-          <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/dashboard?tab=create-post" element={<CreatePost />} />
         </Route>
       </Routes>
       <Footer />

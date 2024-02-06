@@ -9,6 +9,9 @@ export function DashPosts() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [currentuser, setCurrentUser] = useRecoilState(currentAtom);
+  const [showmore, setShowmore] = useState(true);
+
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -17,6 +20,9 @@ export function DashPosts() {
         );
         if (res.status === 200) {
           setPosts(res.data.posts);
+          if(res.data.posts.length<9){
+            setShowmore(false)
+          }
         }
       } catch (error) {
         console.log(error);
@@ -26,6 +32,21 @@ export function DashPosts() {
       fetchPosts();
     }
   }, [currentuser._id]);
+
+  const HandleShowMore = async () => {
+    const startIndex = posts.length;
+    try {
+      const res = await axios.get('http://localhost:3000/api/post/getPosts?userId='+currentuser._id+'&startIndex='+startIndex)
+      if(res.status===200){
+        setPosts((prev)=>[...prev,...res.data.posts]);
+        if(res.data.posts.length<9){
+          setShowmore(false)
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-600">
@@ -77,6 +98,9 @@ export function DashPosts() {
           </Table.Body>
         ))}
       </Table>
+      {showmore && <button onClick={HandleShowMore} className="w-full py-7 font-semibold hover:underline  self-center text-sm text-teal-500">
+        Show more
+        </button>}
     </div>
   );
 }

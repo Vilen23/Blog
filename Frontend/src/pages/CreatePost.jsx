@@ -113,7 +113,7 @@ export function CreatePost() {
   }
 
   return (
-    <div className="p-3 mx-auto max-w-3xl min-h-screen">
+    <div className="p-3 w-[700px] mx-auto min-h-screen">
       <h1 className="text-center text-3xl my-7 font-bold">CreatePost</h1>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row justify-between gap-4">
