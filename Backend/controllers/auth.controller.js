@@ -162,10 +162,48 @@ const deleteuser = async (req, res, next) => {
   }
 };
 
+const getUsers = async (req, res, next) => {
+  if(!req.user.isAdmin){
+    return next(errorHandler(401, "You are not allowed to view all users"))
+  }
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.order === "asc" ? 1 : -1;
+    const users = await User.find()
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+    const userWithoutPass = users.map((user)=>{
+      const {password,...rest} = user._doc;
+      return rest;
+    })
+    const totalUsers = await User.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    )
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    })
+
+    res.status(200).json({
+      users:userWithoutPass,
+      totalUsers,
+      lastMonthUsers,
+    })
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   signup,
   signin,
   google,
   update,
   deleteuser,
+  getUsers,
 };
