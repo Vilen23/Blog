@@ -57,7 +57,7 @@ export function Navabar() {
               return (
                 <div
                   className="flex items-center gap-1 cursor-pointer hover:text-purple-800 
-              hover:underline-offset-1 text-[18px]"
+              hover:underline-offset-1 text-[18px] " key={item.name}
                   onClick={() => {
                     navigate(item.to);
                   }}

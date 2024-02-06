@@ -25,7 +25,7 @@ export function DashUsers() {
         if (res.status === 200) {
           setUsers(res.data.users);
           setLoading(false);
-          if (res.data.posts.length < 9) {
+          if (res.data.users.length < 9) {
             setShowmore(false);
           }
         }
@@ -58,11 +58,11 @@ export function DashUsers() {
   const HandleDeletePost = async () => {
     try {
       const res = await axios.delete(
-        `http://localhost:3000/api/user/deleteuser/${usertodelete._id}/${currentuser._id}`
+        `http://localhost:3000/api/user/deleteuser/${usertodelete}/${currentuser._id}`
       );
       if (res.status === 200) {
         setShowModal(false);
-        setPosts((prev) => prev.filter((post) => post._id !== usertodelete._id));
+        setUsers((prev) => prev.filter((post) => post._id !== usertodelete));
       }
     } catch (error) {
       console.log(error);
@@ -85,7 +85,7 @@ export function DashUsers() {
           <Table.HeadCell>Delete</Table.HeadCell>
         </Table.Head>
         {users.map((user) => (
-          <Table.Body className="font-semibold text-[16px] divide-y">
+          <Table.Body className="font-semibold text-[16px] divide-y" key={user._id}>
             <Table.Row className="bg-white">
               <Table.Cell>
                 {new Date(user.createdAt).toLocaleDateString()}
