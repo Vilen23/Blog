@@ -249,42 +249,8 @@ export function DashProfile() {
               </span>
             </div>
             {error && <Alert color="failure">{error}</Alert>}
-            <Modal
-              show={showModal}
-              onClose={() => {
-                setShowModal(false);
-              }}
-              popup
-              size="md"
-            >
-              <Modal.Header />
-              <Modal.Body>
-                <div className="text-center ">
-                  <HiOutlineExclamationCircle className="text-9xl text-gray-500 mx-auto" />
-                  <h3 className="text-lg text-gray-500">
-                    Are you sure you want to delete your account?
-                  </h3>
-                  <div className="flex justify-center gap-20 mt-4">
-                    <button
-                      type="button"
-                      className="w-[100px] h-[50px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
-                      onClick={HandleDeleteUser}
-                    >
-                      <p className="text-xl">Delete</p>
-                    </button>
-                    <button
-                      type="button"
-                      className="w-[100px] rounded-lg text-white font-bold text-xl bg-red-600 hover:bg-white hover:text-red-600 hover:border-red-600 border-2 border-red-600"
-                      onClick={() => {
-                        setShowModal(false);
-                      }}
-                    >
-                      <p className="text-xl">Cancel</p>
-                    </button>
-                  </div>
-                </div>
-              </Modal.Body>
-            </Modal>
+            
+            
           </div>
         </div>
       )}

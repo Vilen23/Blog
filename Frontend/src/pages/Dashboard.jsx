@@ -4,6 +4,7 @@ import { DashSidebar } from "../comp/DashSidebar";
 import { DashProfile } from "../comp/DashProfile";
 import { DashPosts } from "../comp/DashPosts";
 import { CreatePost } from "./CreatePost";
+import { UpdatePost } from "./UpdatePost";
 
 export function Dashboard() {
   const location = useLocation();

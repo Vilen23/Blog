@@ -23,12 +23,11 @@ const create = async (req, res, next) => {
   }
 };
 
-
- const getPosts = async (req, res, next) => {
+const getPosts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
-    const sortDirection = req.query.order === 'asc' ? 1 : -1;
+    const sortDirection = req.query.order === "asc" ? 1 : -1;
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
@@ -36,8 +35,8 @@ const create = async (req, res, next) => {
       ...(req.query.postId && { _id: req.query.postId }),
       ...(req.query.searchTerm && {
         $or: [
-          { title: { $regex: req.query.searchTerm, $options: 'i' } },
-          { content: { $regex: req.query.searchTerm, $options: 'i' } },
+          { title: { $regex: req.query.searchTerm, $options: "i" } },
+          { content: { $regex: req.query.searchTerm, $options: "i" } },
         ],
       }),
     })
@@ -69,21 +68,45 @@ const create = async (req, res, next) => {
   }
 };
 
-const deletePost = async(req,res,next)=>{
+const deletePost = async (req, res, next) => {
   console.log(req.user);
-  if(!req.user.isAdmin || req.user.id !== req.params.userID){
-    return next(errorHandler(401,"You are not allowed to delete this post"))
+  if (!req.user.isAdmin || req.user.id !== req.params.userID) {
+    return next(errorHandler(401, "You are not allowed to delete this post"));
   }
   try {
     await Post.findByIdAndDelete(req.params.postID);
-    res.status(200).json("Post has been deleted")
+    res.status(200).json("Post has been deleted");
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
+const updatePost = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userID) {
+    return next(errorHandler(401, "You are not allowed to update this post"));
+  }
+  try {
+    const updatePost = await Post.findByIdAndUpdate(
+      req.params.postID,
+      {
+        $set: {
+          title: req.body.title,
+          category: req.body.category,
+          image: req.body.image,
+          content: req.body.content,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatePost);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   create,
   getPosts,
-  deletePost
+  deletePost,
+  updatePost,
 };

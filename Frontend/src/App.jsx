@@ -12,6 +12,7 @@ import { Privateroute } from "./comp/Privateroute";
 import axios from "axios";
 import { AdminOnlyPrivateRoute } from "./comp/AdminOnlyPrivateRoute";
 import { CreatePost } from "./pages/CreatePost";
+import { UpdatePost } from "./pages/UpdatePost";
 function App() {
   axios.defaults.withCredentials = true;
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/projects" element={<Projects />} />
         <Route element={<AdminOnlyPrivateRoute />}>
           <Route path="/dashboard?tab=create-post" element={<CreatePost />} />
+          <Route path="/update-post/:postID" element={<UpdatePost />} />
         </Route>
       </Routes>
       <Footer />
