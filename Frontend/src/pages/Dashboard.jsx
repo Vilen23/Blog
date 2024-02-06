@@ -5,6 +5,7 @@ import { DashProfile } from "../comp/DashProfile";
 import { DashPosts } from "../comp/DashPosts";
 import { CreatePost } from "./CreatePost";
 import { UpdatePost } from "./UpdatePost";
+import { DashUsers } from "../comp/DashUsers";
 
 export function Dashboard() {
   const location = useLocation();
@@ -25,7 +26,8 @@ export function Dashboard() {
       {/*DashProfile*/}
       {tab === "profile" && <DashProfile />}
       {tab === "posts" && <DashPosts />}
-      {tab ==="create-post" && <CreatePost/>}
+      {tab === "create-post" && <CreatePost />}
+      {tab === "users" && <DashUsers />}
     </div>
   );
 }

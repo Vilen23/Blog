@@ -25,7 +25,7 @@ export function UpdatePost() {
   const [imageUrl, setImageUrl] = useRecoilState(createPostImageUrl);
 
 useEffect(()=>{
-    setLoading(false);
+    setLoading(true);
     console.log(postID);
     try {
         const fetchpost = async ()=>{
@@ -33,6 +33,7 @@ useEffect(()=>{
             if(res.status === 200){
                 setPost(res.data.posts[0]);
                 console.log(res.data.posts[0]);
+                setLoading(false)
             }
         }
         fetchpost();
@@ -130,79 +131,79 @@ useEffect(()=>{
   };
 
   return (
-    <div className="p-3 w-[700px] mx-auto min-h-screen">
-      <h1 className="text-center text-3xl my-7 font-bold">Update Post</h1>
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <TextInput
-          value={post.title}
-            type="text"
-            label="Title"
-            placeholder="Title"
-            required
-            id="title"
-            className="flex-1"
-            onChange={HandleTitleChange}
-          />
-          <Select
-          value={post.category}
-            className="font-semibold"
-            onChange={(e) => {
-              setPost((prev) => ({ ...prev, category: e.target.value }));
-            }}
-          >
-            <option value="uncategorized">Select a category</option>
-            <option value="MERN">MERN Stack</option>
-            <option value="DSA">Data structure and algorithm</option>
-          </Select>
-        </div>
-        <div className="flex gap-4 items-center justify-between border-2 border-teal-500 border-dotted p-3">
-          <FileInput
-            type="file"
-            accept="image/*"
-            onChange={HandleImageChange}
-            onClick={() => {
-              setError(null);
-            }}
-          />
-          <Button
-            type="button"
-            gradientDuoTone="purpleToPink"
-            outline
-            className="h-[40px] w-[100px] font-semibold"
-            onClick={() => {
-              setuploadimage(true);
-            }}
-          >
-            {loading ? <Loading /> : loadingcomplete ? "Uploaded" : "Upload"}
-          </Button>
-        </div>
-        {error && <Alert color="failure">{error}</Alert>}
-        {post.image && (
-          <img
-            src={post.image}
-            alt="upload"
-            className="w-full h-72 object-cover object-top"
-          />
-        )}
-        <ReactQuill
-        value={post.content}
-          theme="snow"
-          placeholder="Write Something..."
-          className="h-72 mb-12"
-          onChange={HandleReactQuillChange}
+    loading ? <Loading/> : <div className="p-3 w-[700px] mx-auto min-h-screen">
+    <h1 className="text-center text-3xl my-7 font-bold">Update Post</h1>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <TextInput
+        value={post.title}
+          type="text"
+          label="Title"
+          placeholder="Title"
+          required
+          id="title"
+          className="flex-1"
+          onChange={HandleTitleChange}
+        />
+        <Select
+        value={post.category}
+          className="font-semibold"
+          onChange={(e) => {
+            setPost((prev) => ({ ...prev, category: e.target.value }));
+          }}
+        >
+          <option value="uncategorized">Select a category</option>
+          <option value="MERN">MERN Stack</option>
+          <option value="DSA">Data structure and algorithm</option>
+        </Select>
+      </div>
+      <div className="flex gap-4 items-center justify-between border-2 border-teal-500 border-dotted p-3">
+        <FileInput
+          type="file"
+          accept="image/*"
+          onChange={HandleImageChange}
+          onClick={() => {
+            setError(null);
+          }}
         />
         <Button
-          type="submit"
+          type="button"
           gradientDuoTone="purpleToPink"
           outline
-          size="xl"
-          className="w-full font-semibold"
-          onClick={HandlePosting}
+          className="h-[40px] w-[100px] font-semibold"
+          onClick={() => {
+            setuploadimage(true);
+          }}
         >
-          <p className="text-2xl">Update</p>
+          {loading ? <Loading /> : loadingcomplete ? "Uploaded" : "Upload"}
         </Button>
       </div>
+      {error && <Alert color="failure">{error}</Alert>}
+      {post.image && (
+        <img
+          src={post.image}
+          alt="upload"
+          className="w-full h-72 object-cover object-top"
+        />
+      )}
+      <ReactQuill
+      value={post.content}
+        theme="snow"
+        placeholder="Write Something..."
+        className="h-72 mb-12"
+        onChange={HandleReactQuillChange}
+      />
+      <Button
+        type="submit"
+        gradientDuoTone="purpleToPink"
+        outline
+        size="xl"
+        className="w-full font-semibold"
+        onClick={HandlePosting}
+      >
+        <p className="text-2xl">Update</p>
+      </Button>
     </div>
+  </div>
   );
 }

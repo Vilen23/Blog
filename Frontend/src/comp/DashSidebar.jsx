@@ -4,6 +4,7 @@ import { HiArrowSmRight, HiDocumentText, HiUser } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { currentAtom, errorAtom, loadingAtom } from "../State/User/UserState";
+import { FaUsers } from "react-icons/fa";
 
 export function DashSidebar() {
   const location = useLocation();
@@ -59,6 +60,18 @@ export function DashSidebar() {
               className="cursor-pointer"
             >
               Posts
+            </Sidebar.Item>
+          )}
+          {currentUser.isAdmin && (
+            <Sidebar.Item
+              active={tab === "users"}
+              onClick={() => {
+                navigate("/dashboard?tab=users");
+              }}
+              icon={FaUsers}
+              className="cursor-pointer"
+            >
+              Users
             </Sidebar.Item>
           )}
           <div className="cursor-pointer" onClick={HandleSignOut}>
