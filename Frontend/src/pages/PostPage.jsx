@@ -41,7 +41,7 @@ export function PostPage(){
             <div className='self-center mt-5'>
             <Button color='gray' pill size='xs' >{post && post.category}</Button>
             </div>
-            <div><img src={post && post.image} alt={post && post.title} className='mt-10 p-3 object-cover' /></div>
+            <div className='w-full flex justify-center items-center'><img src={post && post.image} alt={post && post.title} className='mt-10 p-3 object-cover' /></div>
             <div className='p-3 mx-auto max-w-2xl w-full post-content' dangerouslySetInnerHTML={{__html:post && post.content}}>
             </div>
             <div className='max-w-4xl mx-auto w-full'>

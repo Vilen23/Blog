@@ -4,13 +4,32 @@ import { useNavigate } from "react-router-dom";
 import { Alert, Button,Textarea } from "flowbite-react";
 import { CommentAtom } from "../State/Comment/Comment";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { CommentLayout } from "./CommentLayout";
 
 export function CommentSection({postID}){
     const navigate = useNavigate();
     const [commentError, setCommentError] = useState(null);
     const [comment,setComment] = useRecoilState(CommentAtom);
     const [currentUser, setCurrentUser] = useRecoilState(currentAtom);
+    const [postcomments, setPostcomments] = useState([]);
+
+    useEffect(()=>{
+        const fetchComments = async()=>{
+            try {
+                const res = await axios.get(`http://localhost:3000/api/comment/getpostcomments/${postID}`);
+                if(res.status===200){
+                    setPostcomments(res.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchComments();
+    
+    },[postID])
+
+
 
     const HandleSubmit = async (e) => {
         e.preventDefault();
@@ -27,6 +46,7 @@ export function CommentSection({postID}){
             if(res.status===200){
                 setComment('');
                 setCommentError(null);
+                setPostcomments([res.data,...postcomments]);
             }
         } catch (error) {
             setCommentError(error.message);
@@ -69,6 +89,24 @@ export function CommentSection({postID}){
                     </div>
                     {commentError && (<Alert color='red' className="mt-3" show={commentError}>{commentError}</Alert>)}
                 </form>
+            )}
+            {postcomments.length === 0 ? (
+                
+                    <p className="text-sm text-gray-500 font-semibold ml-3 my-5 ">No comments yet</p>
+                
+            ):(
+                <>
+                <div className="flex items-center gap-1 my-5 text-gray-500">
+                    <p className="font-serif">Comments</p>
+                    <div className="border-[1px] border-cyan-800 hover:bg-cyan-50 hover:text-cyan-700 shadow-md cursor-pointer text-cyan-500 rounded-xl h-[30px] w-[30px] flex items-center justify-center">
+                        <p>{postcomments.length}</p>
+
+                    </div>
+                </div>
+                {postcomments.map((comment)=>{
+                   return <CommentLayout key={comment._id} comment={comment}/>
+                })}
+                </>
             )}
         </div>
     )
