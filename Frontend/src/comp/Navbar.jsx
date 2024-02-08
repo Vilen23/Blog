@@ -85,7 +85,7 @@ export function Navabar() {
             >
               <Dropdown.Header>
                 <span className="block text-md font-bold">
-                  @{currentUser.username}
+                  {currentUser.username}
                 </span>
                 <span className="truncate text-sm">{currentUser.email}</span>
               </Dropdown.Header>

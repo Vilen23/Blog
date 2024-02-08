@@ -5,6 +5,12 @@ const CommentAtom = atom({
     default:''
 })
 
+const postCommentsAtom = atom({
+    key:'postComments',
+    default:[]
+})
+
 export {
-    CommentAtom
+    CommentAtom,
+    postCommentsAtom
 }
