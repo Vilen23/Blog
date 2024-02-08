@@ -27,7 +27,6 @@ export function DashSidebar() {
   const HandleSignOut = async (e) => {
     try {
       setcurrentUser({});
-      navigate("/signin");
     } catch (error) {
       setError(error);
       setLoading(false);

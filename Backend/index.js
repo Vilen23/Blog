@@ -5,6 +5,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const userRoutes = require("./routes/user.routes");
 const postRoutes = require("./routes/post.route");
+const commentRoutes = require('./routes/comment.route')
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use('/api/post',postRoutes);
+app.use('/api/comment',commentRoutes)
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;

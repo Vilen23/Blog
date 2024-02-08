@@ -22,7 +22,6 @@ export function Navabar() {
     const HandleSignOut = async (e) => {
       try {
         setcurrentUser({});
-        navigate("/signin");
       } catch (error) {
         setError(error);
         setLoading(false);
