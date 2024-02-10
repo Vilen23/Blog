@@ -15,6 +15,7 @@ import axios from "axios";
 export function UpdatePost() {
   const { postID } = useParams();
   const navigate = useNavigate();
+  const [loadingimage, setloadingimage] = useState(false);
   const [post, setPost] = useRecoilState(Post);
   const [error, setError] = useRecoilState(errorAtom);
   const [uploadimage, setuploadimage] = useState(false);
@@ -42,11 +43,11 @@ useEffect(()=>{
     }
 },[])
 
-  const HandleTitleChange = debounce((e) => {
-    setPost((prev) => {
-      return { ...prev, title: e.target.value };
-    });
-  }, 500);
+const HandleTitleChange = (e) => {
+  setPost((prev) => {
+    return { ...prev, title: e.target.value };
+  });
+};
 
   const HandleReactQuillChange = debounce((value) => {
     setPost((prev) => {
@@ -95,7 +96,7 @@ useEffect(()=>{
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setloadingcomplete(false);
-        setLoading(true);
+        setloadingimage(true);
         console.log("Upload is " + progress + "% done");
       },
       (error) => {
@@ -105,7 +106,7 @@ useEffect(()=>{
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         setImageUrl(downloadURL);
         setPost((prev) => ({ ...prev, image: downloadURL }));
-        setLoading(false);
+        setloadingimage(false);
         setloadingcomplete(true);
       }
     );
@@ -175,7 +176,7 @@ useEffect(()=>{
             setuploadimage(true);
           }}
         >
-          {loading ? <Loading /> : loadingcomplete ? "Uploaded" : "Upload"}
+          {loadingimage ? <Loading /> : loadingcomplete ? "Uploaded" : "Upload"}
         </Button>
       </div>
       {error && <Alert color="failure">{error}</Alert>}
