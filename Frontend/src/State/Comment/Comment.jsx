@@ -10,7 +10,13 @@ const postCommentsAtom = atom({
     default:[]
 })
 
+const commentsAtom = atom({
+    key:'comments',
+    default:[]
+})
+
 export {
     CommentAtom,
-    postCommentsAtom
+    postCommentsAtom,
+    commentsAtom
 }

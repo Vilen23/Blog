@@ -133,9 +133,9 @@ export function CommentSection({ postID }) {
             <p className="text-xs text-gray-500">
               {300 - comment.length} Characters remaining
             </p>
-            <Button outline gradientDuoTone="purpleToPink" type="Submit">
+            <button className="border-2 border-cyan-500 px-2 py-1 rounded-md font-semibold text-md hover:bg-cyan-500 hover:text-white" type="Submit">
               Submit
-            </Button>
+            </button>
           </div>
           {commentError && (
             <Alert color="red" className="mt-3" show={commentError}>

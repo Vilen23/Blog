@@ -143,7 +143,7 @@ export function DashUsers() {
           <div className="text-center ">
             <HiOutlineExclamationCircle className="text-9xl text-gray-500 mx-auto" />
             <h3 className="text-lg text-gray-500">
-              Are you sure you want to delete the Post?
+              Are you sure you want to delete the User?
             </h3>
             <div className="flex justify-center gap-20 mt-4">
               <button

@@ -6,6 +6,8 @@ import { DashPosts } from "../comp/DashPosts";
 import { CreatePost } from "./CreatePost";
 import { UpdatePost } from "./UpdatePost";
 import { DashUsers } from "../comp/DashUsers";
+import { DashComments } from "../comp/DashComments";
+import { DashboardComp } from "../comp/DashboardComp";
 
 export function Dashboard() {
   const location = useLocation();
@@ -28,6 +30,8 @@ export function Dashboard() {
       {tab === "posts" && <DashPosts />}
       {tab === "create-post" && <CreatePost />}
       {tab === "users" && <DashUsers />}
+      {tab === "comments" && <DashComments/>}
+      {tab === "dashboard" && <DashboardComp/>}
     </div>
   );
 }

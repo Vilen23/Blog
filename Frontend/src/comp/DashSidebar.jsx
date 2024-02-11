@@ -4,7 +4,8 @@ import { HiArrowSmRight, HiDocumentText, HiUser } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { currentAtom, errorAtom, loadingAtom } from "../State/User/UserState";
-import { FaUsers } from "react-icons/fa";
+import { FaComments, FaUsers } from "react-icons/fa";
+import { MdDashboard } from "react-icons/md";
 
 export function DashSidebar() {
   const location = useLocation();
@@ -17,7 +18,6 @@ export function DashSidebar() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
-    console.log(tabFromUrl);
     if (tabFromUrl) {
       setTab(tabFromUrl);
     }
@@ -37,6 +37,18 @@ export function DashSidebar() {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup>
+          {currentUser.isAdmin && (
+            <Sidebar.Item
+              icon={MdDashboard}
+              className="cursor-pointer"
+              active={tab === "dashboard"}
+              onClick={() => {
+                navigate("/dashboard?tab=dashboard");
+              }}
+            >
+              Dashboard
+            </Sidebar.Item>
+          )}
           <Sidebar.Item
             active={tab === "profile"}
             icon={HiUser}
@@ -71,6 +83,18 @@ export function DashSidebar() {
               className="cursor-pointer"
             >
               Users
+            </Sidebar.Item>
+          )}
+          {currentUser.isAdmin && (
+            <Sidebar.Item
+              active={tab === "comments"}
+              onClick={() => {
+                navigate("/dashboard?tab=comments");
+              }}
+              icon={FaComments}
+              className="cursor-pointer"
+            >
+              Comments
             </Sidebar.Item>
           )}
           <div className="cursor-pointer" onClick={HandleSignOut}>
