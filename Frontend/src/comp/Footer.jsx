@@ -3,7 +3,9 @@ import { FaRegCopyright } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 export function Footer() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col pb-10 mt-[100px] ">
       <div className="border-t-2 border-black pt-10  py-4 md:flex md:justify-between md:px-[150px] md:items-center   ">
@@ -27,15 +29,24 @@ export function Footer() {
           <div className="flex flex-col items-center gap-2">
             <p className="font-bold text-xl text-black">ABOUT</p>
             <div className="flex flex-col justify-center items-center gap-[2px]">
-              <p className=" text-gray-700">Projects</p>
-              <p className=" text-gray-700">My Blog</p>
+              <p className=" text-gray-700 cursor-pointer  hover:text-cyan-700" onClick={()=>{
+                navigate("/projects")
+              }}>Projects</p>
+              <p className=" text-gray-700 cursor-pointer  hover:text-cyan-700" onClick={()=>{
+                navigate('/')
+              }}>My Blog</p>
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
             <p className="font-bold text-xl ">FOLLOW US</p>
             <div className="flex flex-col justify-center items-center gap-[2px]">
-              <p className=" text-gray-700">Discord</p>
-              <p className=" text-gray-700">Instagram</p>
+              <p className=" text-gray-700 cursor-pointer hover:text-cyan-700 "
+              onClick={()=>{
+                window.open("https://www.discord.com")
+              }}>Discord</p>
+              <p className=" text-gray-700 cursor-pointer  hover:text-cyan-700" onClick={()=>{
+                window.open("https://www.instagram.com/shivamlather__/")
+              }}>Instagram</p>
             </div>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -58,9 +69,15 @@ export function Footer() {
         </p>
       </div>
       <div className="pl-[7%] md:pl-[4%] mt-6 flex gap-4 text-gray-700 ">
-      <FaFacebook className="text-3xl hover:text-black  cursor-pointer"/>
-      <FaGithub  className="text-3xl hover:text-black  cursor-pointer"/>
-      <a href="http://instagram.com"><FaInstagram className="text-3xl hover:text-black  cursor-pointer" /></a>
+      <FaFacebook className="text-3xl hover:text-black  cursor-pointer" onClick={()=>{
+        window.open('https://www.facebook.com/vilenfx/')
+      }}/>
+      <FaGithub  className="text-3xl hover:text-black  cursor-pointer" onClick={()=>{
+        window.open('https://github.com/Vilen23')
+      }}/>
+      <FaInstagram className="text-3xl hover:text-black  cursor-pointer"onClick={()=>{
+        window.open('https://www.instagram.com/shivamlather__/')
+      }} />
       </div>
     </div>
   );
