@@ -91,7 +91,7 @@ const getComments = async (req, res, next) => {
       const limit = parseInt(req.query.limit) || 9;
       const sortDirection = req.query.sort === 'desc' ? -1 : 1;
       const comments = await Comment.find()
-        .sort({ createdAt: sortDirection })
+        .sort({ createdAt: -1 })
         .skip(startIndex)
         .limit(limit);
       const totalComments = await Comment.countDocuments();
